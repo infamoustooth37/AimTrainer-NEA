@@ -46,6 +46,55 @@ class targetObj{
         }
 
     }
+// method to be used in flicking task allowing targets to change location efficiently
+    moveStatic(newX,newY){
+        this.xPos = newX;
+        this.yPos = newY;
+
+    }
+
+//Method to calculate to check if the mouse is on target. Run when mouse is clicked
+//Takes the x and y coordinates of mouse as parameters
+    doesContain(mouseXpos,mouseYpos){
+        //uses p5 method, dist, to calculate the distance between mouse and target
+        this.distance = dist(mouseXpos,mouseYpos,this.xPos,this.yPos);
+        //compares the distance with diameter of target
+        if(this.distance < this.size-50){
+            //mouse is over target
+            return true;
+        }
+        else{
+            //mouse is not over target
+            return false;
+        }
+    }
+
+
+//method to use for tracking target across screen
+//Target only moving across horizontally --> y speed = 0
+//runs every round to change speed of target
+    setTrackingSpeed(newSpeed){
+        this.xSpeed = newSpeed
+    }
+//sets new y position when target has to reset
+    setNewYpos(newYpos){
+        this.yPos = newYpos;
+    }
+    //resets x position of target to be off screen runs when hits border
+    resetXpos(){
+        this.xPos = -50;
+    }
+    //used to check if target is off the screen
+    getXpos(){
+        return this.xPos;
+    }
+//move target horizontally NO verticle movement 
+    moveTracking(){
+        this.xPos = this.xPos + this.xSpeed
+    }
+
+
+
 
 
 }
