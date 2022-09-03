@@ -23,7 +23,7 @@ function setup(){
     //random height for target
     randomYpos = randomY();
     //target starts off screen on left side and will move to the right hand side
-    target = new targetObj(size,speed,-50,randomYpos)
+    target = new trackingObj(size,speed,-50,randomYpos);
 }
 
 function draw(){

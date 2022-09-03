@@ -76,12 +76,10 @@ function setup() {
       let newTargetY = randomY();
 
       //create static target (speed = 0) with diameter 100 and random x and y position determined above
-      let newTarget = new targetObj(size,0,newTargetX,newTargetY);
+      let newTarget = new flickingObj(size,0,newTargetX,newTargetY);
 
       //push target into targetContainer for management
       targetContainer.push(newTarget);
-
-
     }
   
   }
