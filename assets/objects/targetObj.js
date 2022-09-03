@@ -92,9 +92,4 @@ class targetObj{
     moveTracking(){
         this.xPos = this.xPos + this.xSpeed
     }
-
-
-
-
-
 }
