@@ -9,21 +9,43 @@
 //Initialising global variables
 
 let targetContainer = [];
-let size = 100;
-let speed = 3
+let size; //size of target
+let speed; //speed of target
 
+let gameState = 0;
+// gameState = 0 --> Pre-game
+// gameState = 1 --> Game
+// gameState = 2 --> Post-game
 //-------------------------------
 
+//UI elements
+let speedSlider;
+let sizeSlider;
+let sliderContainer = [];
 
 
 function setup(){
     createCanvas(windowWidth,windowHeight);
+    //Min val = 20 , Max val = 80, Starting val = 30, Step = 1
+    speedSlider = createSlider(3,10,3,1);
+    //add slider to array named sliderContainer
+    sliderContainer.push(speedSlider);
+    //Min val = 20 , Max val = 80, Starting val = 30 Step = 5
+    sizeSlider = createSlider(20,100,40,5);
+    //add slider to array named sliderContainer
+    sliderContainer.push(sizeSlider);    
 }
 
 function draw(){
     background(51);
 
-    //checks the number of targets in play. If 0 targets then new targets to be created
+    //gameState checker
+
+    if(gameState == 0){
+        customiseTask();
+    }
+    else{
+        //checks the number of targets in play. If 0 targets then new targets to be created
     if(targetContainer.length  == 0 ){
         createTarget();
     }
@@ -32,6 +54,10 @@ function draw(){
         targetContainer[i].display();
         targetContainer[i].move();
     } 
+
+    }
+
+    
 }
 //runs when mouse is pressed
 function mousePressed(){
@@ -79,4 +105,21 @@ function createTarget(){
         //push target into targetContainer for management
         targetContainer.push(newTarget);
     }
+}
+function customiseTask(){
+    speedSlider.position(windowWidth/10-40,windowHeight/8+15);
+    sizeSlider.position(windowWidth/3-10,windowHeight/8+15);
+   
+//retrieve value of each slider to then use in target settings.
+    targetSpeed = speedSlider.value();
+    targetSize = sizeSlider.value();
+//set the font to verdana
+    textFont('Verdana')
+// set the text colour to white which gives good contrast
+    fill(252);
+// size of text to be set to 30. Not too big nor too small
+    textSize(30);
+    //Text displaying the value of each slider
+    text("Target speed: " + targetSpeed,windowWidth/10-80,windowHeight/8 - 20,(windowWidth/1.5), (windowHeight/10)*1.5);
+    text("Target size: " + targetSize,windowWidth/3-60,windowHeight/8 - 20, (windowWidth/1.5), (windowHeight/10)*1.5);
 }
