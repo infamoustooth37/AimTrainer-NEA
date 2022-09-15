@@ -9,8 +9,8 @@
 //Initialising global variables
 
 let targetContainer = [];
-let size; //size of target
-let speed; //speed of target
+let targetSize; //size of target
+let targetSpeed; //speed of target
 
 let gameState = 0;
 // gameState = 0 --> Pre-game
@@ -18,22 +18,24 @@ let gameState = 0;
 // gameState = 2 --> Post-game
 //-------------------------------
 
+//to check if UI elements are set up on screen when gameState = 0 
+let isUISet = false;
+
 //UI elements
+//sliders
 let speedSlider;
 let sizeSlider;
 let sliderContainer = [];
+//buttons
+let buttonHard;
+let buttonMed;
+let buttonEasy;
+let buttonStart;
+let buttonContainer = []
 
 
 function setup(){
-    createCanvas(windowWidth,windowHeight);
-    //Min val = 20 , Max val = 80, Starting val = 30, Step = 1
-    speedSlider = createSlider(3,10,3,1);
-    //add slider to array named sliderContainer
-    sliderContainer.push(speedSlider);
-    //Min val = 20 , Max val = 80, Starting val = 30 Step = 5
-    sizeSlider = createSlider(20,100,40,5);
-    //add slider to array named sliderContainer
-    sliderContainer.push(sizeSlider);    
+    createCanvas(windowWidth,windowHeight);  
 }
 
 function draw(){
@@ -42,6 +44,10 @@ function draw(){
     //gameState checker
 
     if(gameState == 0){
+        if(isUISet == false){
+            UISetUp();//so that when game is restarted all UI elements will be added again (when pasot game is implemented)
+        }
+        background(72, 174, 73); //green background like main menu
         customiseTask();
     }
     else{
@@ -95,21 +101,23 @@ function createTarget(){
         //choose random direction by changing speed between +Ve and -Ve
         let direction = Math.floor(Math.random() * 2)+1; //Either be 1 or 2. if direction = 1 then it will go -Ve
         if(direction == 1){
-            speed *= -1
+            targetSpeed *= -1
         }
         
 
         //create moving target (speed = 3) with diameter 100 and random x and y position determined above
-        let newTarget = new targetObj(size,speed,newTargetX,newTargetY);
+        let newTarget = new targetObj(targetSize,targetSpeed,newTargetX,newTargetY);
 
         //push target into targetContainer for management
         targetContainer.push(newTarget);
     }
 }
+
+//function dispaly the text and position UI elements in pregame state
 function customiseTask(){
+    //position sldier according to the size of the window
     speedSlider.position(windowWidth/10-40,windowHeight/8+15);
-    sizeSlider.position(windowWidth/3-10,windowHeight/8+15);
-   
+    sizeSlider.position(windowWidth/3-10,windowHeight/8+15); //kept in draw to ensure that position is fixed as window size may change during runtime
 //retrieve value of each slider to then use in target settings.
     targetSpeed = speedSlider.value();
     targetSize = sizeSlider.value();
@@ -120,6 +128,96 @@ function customiseTask(){
 // size of text to be set to 30. Not too big nor too small
     textSize(30);
     //Text displaying the value of each slider
-    text("Target speed: " + targetSpeed,windowWidth/10-80,windowHeight/8 - 20,(windowWidth/1.5), (windowHeight/10)*1.5);
-    text("Target size: " + targetSize,windowWidth/3-60,windowHeight/8 - 20, (windowWidth/1.5), (windowHeight/10)*1.5);
+    text("Target speed: " + targetSpeed,windowWidth/10-55,windowHeight/8 - 30,(windowWidth/1.5), (windowHeight/10)*1.5);
+    text("Target size: " + targetSize,windowWidth/3-20,windowHeight/8 - 30, (windowWidth/1.5), (windowHeight/10)*1.5); 
+    
+
+//Button code
+    
+    text("Preset Difficulties ",windowWidth*0.78,windowHeight/8 - 30, (windowWidth/1.5), (windowHeight/10)*1.5); 
+    //position the button on the page
+    buttonHard.position(windowWidth*0.8,windowHeight/5+15); 
+    buttonMed.position(windowWidth*0.8,windowHeight/5+100); 
+    buttonEasy.position(windowWidth*0.8,windowHeight/5+185); 
+    buttonStart.position(windowWidth*0.8,windowHeight*0.8); 
+
+   //check if each button has been clicked. If so change the values
+    buttonHard.mousePressed(setHard);
+    buttonMed.mousePressed(setMed);
+    buttonEasy.mousePressed(setEasy);
+    buttonStart.mousePressed(setStart)
+}
+
+//function to set the Hard difficulty
+function setHard(){
+    speedSlider.value(7);
+    sizeSlider.value(30);
+}
+//function to set the Medium difficulty
+function setMed(){
+    speedSlider.value(5);
+    sizeSlider.value(40);
+}
+//function to set the Easy difficulty
+function setEasy(){
+    speedSlider.value(3);
+    sizeSlider.value(80);
+}
+
+function setStart(){   
+    //change state to game
+    gameState = 1;
+    //remove the sliders
+    for(let i = 0; i < sliderContainer.length; i++){
+        sliderContainer[i].remove();
+    }
+    //remove the buttons
+    for(let i = 0; i < buttonContainer.length; i++){
+        buttonContainer[i].remove();
+    }
+}
+
+
+//function creates buttons and adds to class for CSS styling
+function setButtons(){
+    //creates button with Label in string 
+    buttonHard = createButton('HARD');
+    //adds the button to class to style in CSS
+    buttonHard.addClass('gameButtons')
+    //append to container
+    buttonContainer.push(buttonHard);
+
+    buttonMed = createButton('MEDIUM');
+    buttonMed.addClass('gameButtons');
+    buttonContainer.push(buttonMed);
+
+    buttonEasy = createButton('EASY');
+    buttonEasy.addClass('gameButtons');
+    buttonContainer.push(buttonEasy);
+
+    buttonStart = createButton('START');
+    buttonStart.addClass('gameButtons');
+    buttonContainer.push(buttonStart);
+}
+
+function setSldiers(){
+     //Min val = 3 , Max val = 10, Starting val = 3, Step = 1
+     speedSlider = createSlider(3,10,3,1);
+     //adds slider to class so that can be styled in CSS
+     speedSlider.addClass('sliders');
+     //add slider to array named sliderContainer
+     sliderContainer.push(speedSlider);
+
+     //Min val = 20 , Max val = 100, Starting val = 40 Step = 5
+     sizeSlider = createSlider(20,100,40,5);
+     sizeSlider.addClass('sliders');
+     sliderContainer.push(sizeSlider);  
+}
+
+//sets up UI 
+function UISetUp(){
+    setButtons();
+    setSldiers();
+    //changes variable to true as AI elements are set
+    isUISet = true;
 }

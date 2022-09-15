@@ -50,7 +50,7 @@ class targetObj{
         //uses p5 method, dist, to calculate the distance between mouse and target
         this.distance = dist(mouseXpos,mouseYpos,this.xPos,this.yPos);
         //compares the distance with diameter of target
-        if(this.distance < this.size-50){
+        if(this.distance < this.size - (this.size/2)){
             //mouse is over target
             return true;
         }
