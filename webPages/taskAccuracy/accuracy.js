@@ -45,7 +45,7 @@ function draw(){
 
     if(gameState == 0){
         if(isUISet == false){
-            UISetUp();//so that when game is restarted all UI elements will be added again (when pasot game is implemented)
+            UISetUp();//so that when game is restarted all UI elements will be added again (when post game is implemented)
         }
         background(72, 174, 73); //green background like main menu
         customiseTask();
@@ -130,7 +130,12 @@ function customiseTask(){
     //Text displaying the value of each slider
     text("Target speed: " + targetSpeed,windowWidth/10-55,windowHeight/8 - 30,(windowWidth/1.5), (windowHeight/10)*1.5);
     text("Target size: " + targetSize,windowWidth/3-20,windowHeight/8 - 30, (windowWidth/1.5), (windowHeight/10)*1.5); 
-    
+
+    //text to give information about what each slider will affect in the task
+    textWrap(WORD);
+    textAlign(BASELINE)
+    text("This will change the speed of the targets. The higher the value is set to the faster the targets will be",windowWidth/10-65,windowHeight/3 - 30,(windowWidth/4), (windowHeight/2))
+    text("This will change the size of the targets. The higher the value is set to the bigger the targets will be.",windowWidth/3-20,windowHeight/3 - 30,(windowWidth/4), (windowHeight/2))    
 
 //Button code
     
@@ -216,7 +221,7 @@ function setSldiers(){
 
 //sets up UI 
 function UISetUp(){
-    setButtons();
+    setButtons();   
     setSldiers();
     //changes variable to true as AI elements are set
     isUISet = true;
