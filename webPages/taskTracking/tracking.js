@@ -37,7 +37,16 @@ let buttonMed;
 let buttonEasy;
 let buttonStart;
 let buttonContainer = []
+//Timer variables
+//Time limit of the task - 60 seconds
+let timeLimit = 60; 
+//post game buttons
+let mainMenuButton;
+let tryAgainButton;
 
+//score variables
+//keep track of the user's score during the task - set to 0 initially
+let userScore = 0;
 
 function setup(){
     createCanvas(windowWidth, windowHeight);
@@ -53,7 +62,7 @@ function draw(){
       background(72, 174, 73); //green background like main menu
       customiseTask();
     }
-    else{
+    else if(gameState == 1){
       //When targets are not made (Start of task)
       if(!isTargetsSet){
         //random integer for speed between 2 and value of slider
@@ -75,12 +84,29 @@ function draw(){
     if(targetXpos > windowWidth){
         resetTarget();        
     }
+    //runs the timer fucntion to check if timer should go down
+    taskTimer();
+    //colour change to white for contrast with target elements
+    fill(255)
+    //displays the value of the timer to the user 
+    text("Time Left:" + timeLimit, windowWidth/2+100, windowHeight/10);
+    //displays the score to the user    
+    text("Score: " + int(userScore), windowWidth/2-200, windowHeight/10);
 //checks if the mouse is over the target i.e. tracking
     if(target.doesContain(mouseX,mouseY)){
-        //if true points increase (points implemented in later iterations)
-        console.log("Mouse is over target points ++")//placeholder
+        userScore += 1/frameRate();
     }
   }
+  else if(gameState == 2){
+    if(isUISet == false){
+        UISetUp();//so that button elements are added
+    }
+    background(72, 174, 73);
+    //creates and manages the rest of the UI elements
+    postGameUI();
+    
+}
+
 }
 
 //function generates random value to be used as y position for target
@@ -111,6 +137,7 @@ function draw(){
 
 //function dispaly the text and position UI elements in pregame state
 function customiseTask(){
+  textAlign(LEFT);
   //position sldier according to the size of the window
   speedSlider.position(windowWidth/10-40,windowHeight/8+15);
   sizeSlider.position(windowWidth/3-10,windowHeight/8+15); //kept in draw to ensure that position is fixed as window size may change during runtime
@@ -167,6 +194,10 @@ function setEasy(){
 function setStart(){   
   //change state to game
   gameState = 1;
+  //resets framecount to 0 for timer
+  frameCount = 0;
+  //resets the boolean to false as no UI is set up
+  isUISet = false;
   //remove the sliders
   for(let i = 0; i < sliderContainer.length; i++){
       sliderContainer[i].remove();
@@ -216,8 +247,101 @@ function setSldiers(){
 
 //sets up UI 
 function UISetUp(){
-  setButtons();   
-  setSldiers();
-  //changes variable to true as AI elements are set
-  isUISet = true;
+  
+  if(gameState == 0){
+      setButtons();   
+    setSldiers();
+    //changes variable to true as AI elements are set
+    isUISet = true;
+  }
+  //create post game elements
+  else if(gameState == 2){
+    postGameButtons();
+    isUISet = true;
+    console.log("DCSDSFSD")
+  }
+}
+//This function will be in charge of timing the task - 60 seconds
+function taskTimer(){
+  //if the timer still hasnt reached to 0
+  if(timeLimit > 0){
+      //frames since reset / 60 will give the remander of 0 then 1 second has passed
+      if(frameCount % 60 == 0){
+          //reduce timer by 1
+          timeLimit--;
+      }
+  }
+  else{
+      //next phase - post game
+      gameState = 2;
+  }
+
+}
+
+// creates the UI elements for PostGame phase (gameState 2)
+function postGameUI(){
+  //text set up
+  fill(252);
+  textSize(28);
+  textFont('Verdana');
+  textAlign(CENTER);
+  //text - Headers
+  text("Task Score",windowWidth/2,windowHeight/4 - 40);
+  // page title
+  textSize(36);
+  text("Results",windowWidth/2,windowHeight/15);
+  text("Graphing Feature is unavailable for this task",windowWidth/2,windowHeight/2)
+
+  //Rects for data to show
+  //top left - score
+  rect(windowWidth/2-110, windowHeight/4, 220,75);
+  
+  //Navigation Buttons
+  mainMenuButton.position(windowWidth/50+10,windowHeight/4+430);
+  tryAgainButton.position(windowWidth/2+460,windowHeight/4+430);
+
+  mainMenuButton.mousePressed(setMainMenu);
+  tryAgainButton.mousePressed(setTryAgain);
+
+
+  //change text colour to black
+  fill(0)
+  //text - Data 
+  text(int(userScore),windowWidth/2, windowHeight/3.1);
+}
+
+
+//creates the buttons in the post game phase
+function postGameButtons(){
+  //creates button with label
+  mainMenuButton = createButton("Main Menu");
+  //adds button to CSS class for styling
+  mainMenuButton.addClass("gameButtons");
+
+  tryAgainButton = createButton("Try Again");
+  tryAgainButton.addClass("gameButtons")
+
+}
+//goes to main menu when main menu button is pressed
+function setMainMenu(){
+  //uses JS method window.open and goes to index.html which is the main menu
+  //_self makes it open in the same tab rather than a new tab
+  window.open("/webPages/mainMenu/index.html","_self")
+}
+//function to set the program back to pre game
+function setTryAgain(){
+  //triggers new UI to be set up
+  isUISet = false;
+  //reset time limit to 60 seconds
+  timeLimit = 60;
+  //reset the score back to 0
+  userScore = 0;
+  //remove buttons
+  tryAgainButton.remove();
+  mainMenuButton.remove();
+  //change game state to pregame
+  gameState = 0;
+  while(targetContainer.length > 0){
+      targetContainer.pop();
+  }
 }

@@ -24,6 +24,8 @@ class targetObj{
     }
     //Method to physically display the target on the screen
     display(){
+        //colour change to green for contrast with text elements
+        fill(87, 252, 81)
         //"Draws" a circle on screen for user to visualise using p5 method
         circle(this.xPos,this.yPos,this.size); 
     }
